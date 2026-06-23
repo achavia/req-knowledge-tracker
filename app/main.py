@@ -117,3 +117,5 @@ def view_related_requirements(request: Request, group_name: str):
             "requirements": requirements
         }
     )
+
+handler = app
