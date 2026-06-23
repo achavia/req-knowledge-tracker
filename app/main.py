@@ -12,7 +12,10 @@ from app.models import init_db, SessionLocal, Requirement, RequirementGroup
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-UPLOAD_DIR = "uploads"
+if os.environ.get("VERCEL"):
+    UPLOAD_DIR = "/tmp/uploads"
+else:
+    UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 init_db()
