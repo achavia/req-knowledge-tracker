@@ -23,7 +23,11 @@ trello = TrelloClient()
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(
+    request=request, 
+    name="index.html", 
+    context={"request": request}
+)
 
 @app.post("/submit")
 async def submit(request: Request, subject: str = Form(...), project_name: str = Form(...), body: str = Form(...), files: list[UploadFile] = File(None)):
