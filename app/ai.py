@@ -1,3 +1,5 @@
+import re
+
 def decompose_requirements(subject: str, body: str):
     """Naive requirement decomposition:
     - Groups by header-like lines (uppercase or lines ending with a colon)
@@ -5,25 +7,26 @@ def decompose_requirements(subject: str, body: str):
     Returns list of dicts: {group, title, description}
     """
 
-    lines = body.splitlines()
+    lines_body = re.split(r'\n\s*\n', body)  # Split by blank lines for better grouping
+    split_subject = re.split(r'[:\-–|]', subject)
     requirements = []
     current_group = None
-    for line in lines:
-        line = line.strip()
-        if not line:
-            continue
-        if line.endswith(":") or line.isupper():
-            current_group = line.rstrip(":")
-            continue
-        if line.startswith("-") or line.startswith("*"):
-            title = line.lstrip("-* ").strip()
-            requirements.append({"group": current_group or "General", "title": f"{current_group} - {title}" if current_group else title, "description": title})
-        else:
-            # treat short lines as possible group headers
-            if len(line.split()) <= 3 and line[0].isupper():
-                current_group = line
-            else:
-                requirements.append({"group": current_group or "General", "title": line, "description": line})
+    for lineperreq in lines_body:
+        lines = lineperreq.splitlines()
+        if lines[0].endswith(":") :
+            current_group = lines[0].rstrip(":")
+        if lines[0].startswith("#"):
+            current_group = lines[0].split(".")[1].strip()
+        title = split_subject[1] + " " + current_group
+        description = ""
+        for index, line in enumerate(lines):
+            line = line.strip()
+            if not line:
+                continue
+            if(index == 0):
+                continue  # Skip the first line as it's the group name
+            description += line + "\n"
+        requirements.append({"group": current_group or "General", "title": title, "description": description})        
     return requirements
 
 

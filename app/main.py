@@ -37,7 +37,6 @@ async def submit(request: Request, subject: str = Form(...), project_name: str =
                 saved_files.append(path)
 
         requirements = decompose_requirements(subject, body)
-
         db = SessionLocal()
         for req in requirements:
             group_name = req.get("group") or "General"
@@ -83,11 +82,11 @@ async def submit(request: Request, subject: str = Form(...), project_name: str =
             r.trello_card_url = card_url
             db.commit()
             
-            for path in saved_files:
-                try:
-                    trello.attach_file(card_id=card_id, file_path=path)
-                except Exception as e:
-                    print(f"Error attaching file to Trello card: {e}")
+            # for path in saved_files:
+            try:
+                trello.attach_file(card_id=card_id, file_path=path)
+            except Exception as e:
+                print(f"Error attaching file to Trello card: {e}")
 
         db.close()
         return RedirectResponse(url="/", status_code=303)
