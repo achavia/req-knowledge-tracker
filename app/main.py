@@ -28,6 +28,8 @@ async def submit(request: Request, subject: str = Form(...), project_name: str =
         saved_files = []
         if files:
             for f in files:
+                if f.filename == "":
+                    continue
                 path = os.path.join(UPLOAD_DIR, f.filename)
                 with open(path, "wb") as out:
                     content = await f.read()

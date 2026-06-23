@@ -1,9 +1,22 @@
+from dotenv import load_dotenv
+import os
+
 from sqlalchemy import create_engine, Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
-engine = create_engine("sqlite:///data.db", connect_args={"check_same_thread": False})
+load_dotenv()
+
+DATABASE_URL = os.getenv("SUPABASE_DB")
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
 Base = declarative_base()
-SessionLocal = sessionmaker(bind=engine)
 
 class RequirementGroup(Base):
     __tablename__ = "requirement_groups"
